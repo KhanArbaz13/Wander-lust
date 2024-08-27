@@ -1,56 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wanderlust</title>
-  </head>
-  <body>
-    <h3>Edit Listing</h3>
-    <form method="post" action="/listing/<%= listing._id %>?_method=PUT">
-      <input
-        required="true"
-        type="text"
-        name="listing[title]"
-        value="<%= listing.title %>"
-      />
-      <br />
-      <br />
+<% layout("/layouts/boilerplate") %>
+<body>
+  <h3>Edit Listing</h3>
+  <form method="post" action="/listing/<%= listing._id %>?_method=PUT">
+    <input
+      required="true"
+      type="text"
+      name="listing[title]"
+      value="<%= listing.title %>"
+    />
+    <br />
+    <br />
 
-      <textarea required="true" type="text" name="listing[description]">
+    <textarea required="true" type="text" name="listing[description]">
 <%= listing.description %>
-      </textarea>
-      <br />
-      <br />
+      </textarea
+    >
+    <br />
+    <br />
 
-      <input type="text" name="listing[image]" value="<%= listing.image %>" />
-      <br /><br />
+    <input type="text" name="listing[image]" value="<%= listing.image %>" />
+    <br /><br />
 
-      <input
-        required="true"
-        type="number"
-        name="listing[price]"
-        value="<%= listing.price %>"
-      />
-      <br />
-      <br />
+    <input
+      required="true"
+      type="number"
+      name="listing[price]"
+      value="<%= listing.price %>"
+    />
+    <br />
+    <br />
 
-      <input
-        required="true"
-        type="text"
-        name="listing[location]"
-        value="<%= listing.location %>"
-      /><br />
-      <br />
+    <input
+      required="true"
+      type="text"
+      name="listing[location]"
+      value="<%= listing.location %>"
+    /><br />
+    <br />
 
-      <input
-        required="true"
-        type="text"
-        name="listing[country]"
-        value="<%= listing.country %>"
-      />
+    <input
+      required="true"
+      type="text"
+      name="listing[country]"
+      value="<%= listing.country %>"
+    />
 
-      <button>Save Edit</button>
-    </form>
-  </body>
-</html>
+    <button>Save Edit</button>
+  </form>
+</body>

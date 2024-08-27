@@ -1,19 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wanderlust</title>
-  </head>
-  <body>
-    <h1>Wander lust</h1>
-    <form method="get" action="/listings/new">
-      <button>Create New Listing</button>
-    </form>
-    <ul>
-      <%for(let listing of allListings){ %>
-      <li><a href="/listing/<%= listing._id%>"><%=listing.title %></a></li>
-      <% } %>
-    </ul>
-  </body>
-</html>
+<% layout("/layouts/boilerplate") %>
+<body>
+  <h1>Wander lust</h1>
+  <!-- <form method="get" action="/listings/new">
+    <button>Create New Listing</button>
+  </form> -->
+
+  <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-2">
+    <%for(let listing of allListings){ %>
+    <a href="/listing/<%= listing._id%>" class="listing-link">
+      <div class="card col">
+        <img
+          src="<%=listing.image%> "
+          class="card-img-top"
+          alt="listing image "
+          style="height: 20rem"
+        />
+        <div class="card-img-overlay"></div>
+        <div class="card-body">
+          <p class="card-text">
+            <b><%=listing.title %></b><br />
+            &#8377;<%=listing.price.toLocaleString("en-IN") %> / night<br />
+            <%=listing.discription %><br />
+            <%=listing.location %>, <%=listing.country %><br />
+          </p>
+        </div>
+      </div>
+    </a>
+    <% } %>
+  </div>
+</body>
