@@ -6,6 +6,10 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 //import the schema
 const Listing = require("./models/listing.js");
+//import warpAsync for error handling
+const warpAsync = require("./utils/warpAsync.js");
+//import for custom errors
+const ExpressError = require("./utils/ExpressError.js");
 
 // Start server on port 8080
 const port = 8080;
@@ -56,51 +60,88 @@ app.get("/", (req, res) => {
 //   res.send("test GG");
 // });
 
-//Show all listings
-app.get("/listings", async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
-});
+//Show all listings index route
+app.get(
+  "/listings",
+  warpAsync(async (req, res) => {
+    const allListings = await Listing.find({});
+    res.render("listings/index.ejs", { allListings });
+  })
+);
 
-// create new listing
+//render new listing page
 app.get("/listings/new", (req, res) => {
   res.render("listings/new.ejs");
 });
+// create new listing
 
-app.post("/listings", async (req, res) => {
-  const newListing = new Listing(req.body.listing);
-  await newListing.save();
-  res.redirect("/listings");
-});
+app.post(
+  "/listings",
+  warpAsync(async (req, res, next) => {
+    if (!req.body.listing) {
+      throw new ExpressError(400, "Bad Request-Send valid data for listing ");
+    }
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect("/listings");
+  })
+);
 
-//get details of listing
+//get details of listing Show Route
 
-app.get("/listing/:id", async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
-  res.render("listings/show.ejs", { listing });
-});
+app.get(
+  "/listing/:id",
+  warpAsync(async (req, res) => {
+    let { id } = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs", { listing });
+  })
+);
 
-//Edit Listing
+//Render edit page
 
-app.get("/listings/:id/edit", async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
+app.get(
+  "/listings/:id/edit",
+  warpAsync(async (req, res) => {
+    let { id } = req.params;
+    const listing = await Listing.findById(id);
 
-  res.render("listings/edit.ejs", { listing });
-});
+    res.render("listings/edit.ejs", { listing });
+  })
+);
+//Update route
+app.put(
+  "/listing/:id",
+  warpAsync(async (req, res) => {
+    if (!req.body.listing) {
+      throw new ExpressError(400, "Bad Request-Send valid data for listing ");
+    }
+    let { id } = req.params;
+    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
-app.put("/listing/:id", async (req, res) => {
-  let { id } = req.params;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-
-  res.redirect(`/listing/${id}`);
-});
+    res.redirect(`/listing/${id}`);
+  })
+);
 
 //Delete Listing
-app.delete("/listings/:id/delete", async (req, res) => {
-  let { id } = req.params;
-  await Listing.findByIdAndDelete(id, { ...req.body.listing });
+app.delete(
+  "/listings/:id/delete",
+  warpAsync(async (req, res) => {
+    let { id } = req.params;
+    await Listing.findByIdAndDelete(id, { ...req.body.listing });
 
-  res.redirect(`/listings`);
+    res.redirect(`/listings`);
+  })
+);
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError(404, "Page Not Found"));
 });
+//Servr side  error handling
+app.use((err, req, res, next) => {
+  let { statusCode = 500, message = "Error" } = err;
+  res.status(statusCode).render("error.ejs", { err });
+  //res.status(statusCode).send(message);
+});
+
+//Schema Valditaion

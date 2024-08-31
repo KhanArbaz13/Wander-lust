@@ -119,3 +119,8 @@ cart effect */
   padding-left: 0;
   padding-right: 0;
 }
+
+/* Error handling */
+.err-msg {
+  word-wrap: break-word;
+}
