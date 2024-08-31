@@ -10,6 +10,8 @@ const Listing = require("./models/listing.js");
 const warpAsync = require("./utils/warpAsync.js");
 //import for custom errors
 const ExpressError = require("./utils/ExpressError.js");
+//import for Schema validation
+const { listingSchema } = require("./schema.js");
 
 // Start server on port 8080
 const port = 8080;
@@ -47,19 +49,15 @@ app.get("/", (req, res) => {
   res.send("working root");
 });
 
-// app.get("/testListing", async (req, res) => {
-//   let sampleListing = new Listing({
-//     title: "villa",
-//     description: "best in town",
-//     price: 2000,
-//     location: "Pahalgam, Kashmir",
-//     country: "India",
-//   });
-//   await sampleListing.save();
-//   console.log("Listing Added");
-//   res.send("test GG");
-// });
-
+//Validate Schema
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    throw new ExpressError(400, result.error);
+  } else {
+    next();
+  }
+};
 //Show all listings index route
 app.get(
   "/listings",
@@ -77,10 +75,8 @@ app.get("/listings/new", (req, res) => {
 
 app.post(
   "/listings",
+  validateListing, //call function
   warpAsync(async (req, res, next) => {
-    if (!req.body.listing) {
-      throw new ExpressError(400, "Bad Request-Send valid data for listing ");
-    }
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -112,10 +108,8 @@ app.get(
 //Update route
 app.put(
   "/listing/:id",
+  validateListing, //call function
   warpAsync(async (req, res) => {
-    if (!req.body.listing) {
-      throw new ExpressError(400, "Bad Request-Send valid data for listing ");
-    }
     let { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
