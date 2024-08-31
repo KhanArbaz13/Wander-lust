@@ -1,50 +1,85 @@
 <% layout("/layouts/boilerplate") %>
-    <h3>New Listing</h3>
-    <form method="POST" action="/listings">
-      <input
-        required="true"
-        type="text"
-        name="listing[title]"
-        placeholder="Enter your place name"
-      />
-      <br />
-      <br />
-      <input
-        required="true"
-        type="text"
-        name="listing[description]"
-        placeholder="Enter your place description"
-      />
-      <br />
-      <br />
-      <input
-        type="text"
-        name="listing[image]"
-        placeholder="Enter image url/Link"
-      />
-      <br /><br />
-      <input
-        required="true"
-        type="number"
-        name="listing[price]"
-        placeholder="Enter your place price per day(24hrs)"
-      />
-      <br />
-      <br />
-      <input
-        required="true"
-        type="text"
-        name="listing[location]"
-        placeholder="Enter your place location"
-      /><br />
-      <br />
-      <input
-        required="true"
-        type="text"
-        name="listing[country]"
-        placeholder="Enter your place Country"
-      />
-      <button>Add listing</button>
-    </form>
-  </body>
+<body>
+  <div class="row mt-3">
+    <div class="col-8 offset-2">
+      <h3>Create a New Listing</h3>
+      <form
+        method="POST"
+        action="/listings"
+        class="needs-validation"
+        novalidate
+      >
+        <div class="mb-3">
+          <label for="title" class="form-lable">Title</label>
+          <input
+            required="true"
+            type="text"
+            name="listing[title]"
+            placeholder="Enter your place name"
+            class="form-control"
+          />
+          <div class="invalid-feedback">Please Enter a Title.</div>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-lable">Description</label>
+          <input
+            required="true"
+            type="text"
+            name="listing[description]"
+            placeholder="Enter your place description"
+            class="form-control"
+          />
+          <div class="invalid-feedback">Please Enter a Description.</div>
+        </div>
 
+        <div class="mb-3">
+          <label for="image" class="form-lable">Image</label>
+          <input
+            type="text"
+            name="listing[image]"
+            placeholder="Enter image url/Link"
+            class="form-control"
+          />
+        </div>
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-lable">Price</label>
+            <input
+              required="true"
+              type="number"
+              name="listing[price]"
+              placeholder="Enter your place price per Night"
+              class="form-control"
+            />
+            <div class="invalid-feedback">Please Enter a Price.</div>
+          </div>
+          <div class="mb-3 col-md-8">
+            <label for="country" class="form-lable">Country</label>
+            <input
+              required="true"
+              type="text"
+              name="listing[country]"
+              placeholder="Enter your place Country"
+              class="form-control"
+            />
+          </div>
+          <div class="invalid-feedback">Please Enter The Country.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="location" class="form-lable">Location</label>
+          <input
+            required="true"
+            type="text"
+            name="listing[location]"
+            placeholder="Enter your place location"
+            class="form-control"
+          />
+          <div class="invalid-feedback">Please Enter a Address.</div>
+        </div>
+
+        <button class="btn btn-dark add-btn mt-3 mb-3">Add listing</button>
+      </form>
+    </div>
+  </div>
+</body>
