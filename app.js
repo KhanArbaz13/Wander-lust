@@ -4,14 +4,16 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-//import the schema
+//import the schema for listing
 const Listing = require("./models/listing.js");
 //import warpAsync for error handling
 const warpAsync = require("./utils/warpAsync.js");
 //import for custom errors
 const ExpressError = require("./utils/ExpressError.js");
-//import for Schema validation
-const { listingSchema } = require("./schema.js");
+//import for Schema validation JOI
+const { listingSchema, reviewSchema } = require("./schema.js");
+//import the schema for review
+const Review = require("./models/review.js");
 
 // Start server on port 8080
 const port = 8080;
@@ -49,11 +51,25 @@ app.get("/", (req, res) => {
   res.send("working root");
 });
 
-//Validate Schema
+//Validate Schema listing
 const validateListing = (req, res, next) => {
   let { error } = listingSchema.validate(req.body);
   if (error) {
-    throw new ExpressError(400, error);
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+  } else {
+    next();
+  }
+};
+
+//Validate Schema reviews
+const validateReview = (req, res, next) => {
+  console.log(req.body);
+  let { error } = reviewSchema.validate(req.body);
+
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
   } else {
     next();
   }
@@ -89,7 +105,7 @@ app.get(
   "/listing/:id",
   warpAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
     res.render("listings/show.ejs", { listing });
   })
 );
@@ -127,6 +143,34 @@ app.delete(
     res.redirect(`/listings`);
   })
 );
+//Create reviews path
+app.post(
+  "/listings/:id/reviews",
+  validateReview,
+  warpAsync(async (req, res) => {
+    console.log(req.body.review);
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+    listing.reviews.push(newReview);
+    await newReview.save();
+    await listing.save();
+    let { id } = req.params;
+    res.redirect(`/listing/${id}`);
+  })
+);
+//delete review
+app.delete(
+  "/listing/:id/reviews/:reviewId",
+  warpAsync(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/listing/${id}`);
+  })
+);
+
+//last option
 
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
@@ -137,5 +181,3 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { err });
   //res.status(statusCode).send(message);
 });
-
-//Schema Valditaion
