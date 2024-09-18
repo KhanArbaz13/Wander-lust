@@ -4,6 +4,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const session = require("express-session");
+const flash = require("connect-flash");
 //import for custom errors
 const ExpressError = require("./utils/ExpressError.js");
 //import all listing routes
@@ -42,8 +44,31 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+const sessionOptions = {
+  secret: "mnbkgs64n64flsddjfs456jdnfqi5453534mwnb23kn4j32ji4jb423b4",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 21 * 60 * 60 * 1000,
+    maxAge: 7 * 21 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
+};
+
 app.get("/", (req, res) => {
-  res.send("working root");
+  res.redirect(`/listings`);
+});
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.sucess = req.flash("sucess");
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.redirect(`/listings`);
 });
 
 //use all listing routes
