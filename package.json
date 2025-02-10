@@ -1,7 +1,7 @@
 {
   "name": "project-a",
   "version": "1.0.0",
-  "description": "",
+  "description": "The project is a Online marketplace for short-and-long-term homestays.\r the projext used node JS, Express, MongoDB , Mongoose,\r Ejs, Ejs-Mate, Bootstrap for styling and google fonts (Plus Jakarta Sans)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,10 +13,18 @@
     "connect-flash": "^0.1.1",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
-    "express": "^4.19.2",
+    "express": "^4.21.2",
     "express-session": "^1.18.0",
     "joi": "^17.13.3",
     "method-override": "^3.0.0",
-    "mongoose": "^8.5.4"
-  }
+    "mongoose": "^8.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhanArbaz13/Wander-lust.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KhanArbaz13/Wander-lust/issues"
+  },
+  "homepage": "https://github.com/KhanArbaz13/Wander-lust#readme"
 }
